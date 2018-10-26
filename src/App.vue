@@ -1,59 +1,5 @@
 <template>
   <div id="app">
-    <!--<div class="head-wrap" v-if="isShowTopSearch">
-      <div class="head">
-        <a class="logo" href="/">
-          &lt;!&ndash;<p>Trusted Assets Blockchain</p>&ndash;&gt;
-        </a>
-        <ul class="platform">
-          <li v-for="(item,index) of toggleParam" @click="platform(index)" :class="{active:index===toggleIndex}">{{item}}</li>
-        </ul>
-        <a href="/">欢迎来到 ENGINE ！</a>
-        &lt;!&ndash;<div class="favorite" @click="turnFavorite">
-          <span class="s_text">收藏夹</span>
-          <span class="s_num">{{favoriteCount}}</span>
-        </div>&ndash;&gt;
-        <div class="no_login" v-if="!isLogin">
-          <a href="/login">请登录</a>
-          <a href="/register">免费注册</a>
-        </div>
-        <div class="login" v-if="isLogin" @mouseleave.stop="leaveUl">
-          <div @click.stop="toggle">{{userName}} <img src="./common/images/down.png" alt=""></div>
-          <ul v-if="switchover">
-            &lt;!&ndash;<li><a href="/personalAssets" target="_blank">个人中心</a></li>
-            <li><a href="/securityCenter" target="_blank">安全中心</a></li>&ndash;&gt;
-            <li @click.stop="dropOut">退出</li>
-          </ul>
-        </div>
-      </div>
-    </div>-->
-    <!--<div class="login-header" v-if="isShowLogin">
-      <div class="login-header-cont">
-        <a :href="url">
-          <img src="./common/images/login_header.png" alt="">
-        </a>
-      </div>
-    </div>-->
-    <!--<div class="forget_psw_header" v-if="isShowRegister">
-      <section>
-        <a :href="url">
-          <img src="@/common/images/register_logo.png" alt="">
-        </a>
-        <p>已有账号，立即
-          <a :href="url" class="to_login">登录</a>
-        </p>
-      </section>
-    </div>-->
-    <!--<div class="forget_psw_header" v-if="isShowForgetPassword">
-      <section>
-        <a :href="url">
-          <img src="./common/images/forget_psw_logo.png" alt="">
-        </a>
-        <p>已有账号，立即
-          <a :href="url" class="to_login">登录</a>
-        </p>
-      </section>
-    </div>-->
     <div class="main_wrap">
       <router-view class="main" v-if="isRouterAlive"></router-view>
     </div>
@@ -100,7 +46,6 @@
   import axios from "axios";
   import utils from "@/common/js/utils.js";
   
-  
   export default {
     name: 'App',
     components: {},
@@ -111,245 +56,38 @@
     },
     data() {
       return {
-        url:"https://exchange-test.launchain.org/home",
+        url:"",
         isRouterAlive: true,
-        switchover: false,
-        isLogin: false,
-        userName: "",
-        isShowTopSearch: false,
-        isShowLogin: false,
-        isShowRegister: false,
-        isShowForgetPassword: false,
-        toggleIndex: 0,
-        toggleParam: ["搜索", "交易平台"/*, "转让平台"*/],
         userId: '',
         token: "",
+        userName: "",
       }
     },
     beforeMount() {
-      let token = utils.getCookie("token");
-      if (token) {
-        axios({
-          method: "GET",
-          url: `${baseURL}/v1/sessions/check`,
-          headers: {
-            "Access-Token": `${token}`,
-          }
-        }).then((res) => {
-          if (res.data.user_id) {
-            window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-            let loginInfo = {};
-            loginInfo.token = token;
-            loginInfo.user_id = res.data.user_id;
-            window.sessionStorage.setItem("loginInfo", JSON.stringify(loginInfo));
-            this.userId = JSON.parse(sessionStorage.getItem("loginInfo")).user_id;
-            this.token = JSON.parse(sessionStorage.getItem("loginInfo")).token;
-            this.userName = JSON.parse(sessionStorage.getItem("userInfo")).phone;
-            this.isLogin = true;
-            //this.acquireFavoriteCount();
-          } else {
-            this.isLogin = false;
-            sessionStorage.removeItem('loginInfo');
-            sessionStorage.removeItem('userInfo');
-            //this.dropOut()
-          }
-        }).catch((err) => {
-          console.log(err);
-        })
-      } else {
-        sessionStorage.removeItem('loginInfo');
-        sessionStorage.removeItem('userInfo');
-      }
-      this.changTop()
-    },
-    /*mounted() {
-      if (sessionStorage.getItem("loginInfo")) {
-        this.userId = JSON.parse(sessionStorage.getItem("loginInfo")).user_id;
-        this.token = JSON.parse(sessionStorage.getItem("loginInfo")).token;
-        this.acquireFavoriteCount();
-      }
-    },
-    beforeUpdate() {
-      let token = utils.getCookie("token");
-      if (token) {
-        axios({
-          method: "GET",
-          url: `${baseURL}/v1/sessions/check`,
-          headers: {
-            "Access-Token": `${token}`,
-          }
-        }).then((res) => {
-          if (res.data.user_id) {
-            window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-            let loginInfo = {};
-            loginInfo.token = token;
-            loginInfo.user_id = res.data.user_id;
-            window.sessionStorage.setItem("loginInfo", JSON.stringify(loginInfo));
-            if (JSON.parse(sessionStorage.getItem("loginInfo"))) {
-              this.isLogin = true;
-              this.userName = JSON.parse(sessionStorage.getItem("userInfo")).phone
-            } else {
-              this.isLogin = false
-            }
-            this.changTop()
-          } else {
-            this.dropOut()
-          }
-        }).catch((err) => {
-          console.log(err);
-        })
-      } else {
-        sessionStorage.removeItem('loginInfo');
-        sessionStorage.removeItem('userInfo');
-      }
-    },*/
-    beforeUpdate(){
-      let token = utils.getCookie("token");
-      if (token) {
-        axios({
-          method: "GET",
-          url: `${baseURL}/v1/sessions/check`,
-          headers: {
-            "Access-Token": `${token}`,
-          }
-        }).then((res) => {
-          if (res.data.user_id) {
-            window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-            let loginInfo = {};
-            loginInfo.token = token;
-            loginInfo.user_id = res.data.user_id;
-            window.sessionStorage.setItem("loginInfo", JSON.stringify(loginInfo));
-            this.userId = JSON.parse(sessionStorage.getItem("loginInfo")).user_id;
-            this.token = JSON.parse(sessionStorage.getItem("loginInfo")).token;
-            this.userName = JSON.parse(sessionStorage.getItem("userInfo")).phone;
-            this.isLogin = true;
-            //this.acquireFavoriteCount();
-          } else {
-            this.isLogin = false;
-            sessionStorage.removeItem('loginInfo');
-            sessionStorage.removeItem('userInfo');
-            //this.dropOut()
-          }
-        }).catch((err) => {
-          console.log(err);
-        })
-      } else {
-        sessionStorage.removeItem('loginInfo');
-        sessionStorage.removeItem('userInfo');
-      }
-      this.changTop()
-    },
-    computed: {
-      favoriteCount: function () {
-        return this.$store.state.favoriteCount
-      }
-    },
-    watch: {
-      favoriteCount: function () {
-        this.acquireFavoriteCount();
-      }
-    },
-    methods: {
-      changTop() {
-        if (this.$route.path == "/login") {
-          this.isShowTopSearch = false;
-          this.isShowLogin = true;
-          this.isShowRegister = false;
-          this.isShowForgetPassword = false;
-        } else if (this.$route.path == "/register") {
-          this.isShowTopSearch = false;
-          this.isShowLogin = false;
-          this.isShowRegister = true;
-          this.isShowForgetPassword = false;
-        } else if (this.$route.path == "/forgetPassword") {
-          this.isShowTopSearch = false;
-          this.isShowLogin = false;
-          this.isShowRegister = false;
-          this.isShowForgetPassword = true;
-        } else if (this.$route.path == "/contract") {
-          this.isShowTopSearch = false;
-          this.isShowLogin = false;
-          this.isShowRegister = false;
-          this.isShowForgetPassword = false;
-        }else {
-          this.isShowTopSearch = true;
-          this.isShowLogin = false;
-          this.isShowRegister = false;
-          this.isShowForgetPassword = false;
+      let url = location.search;
+      this.$store.state.URL=url
+      if (url.indexOf("?") != -1) {
+        let theRequest = new Object();
+        let str = url.substr(1);
+        let strs = str.split("&");
+        for (let i = 0; i < strs.length; i++) {
+          theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
         }
-      },
+        this.$store.state.redirectURL=theRequest.redirectURL
+      } else {
+        this.$store.state.redirectURL=searchPlatform
+      }
+    },
+    mounted() {},
+    beforeUpdate(){},
+    computed: {},
+    watch: {},
+    methods: {
       reload() {
         this.isRouterAlive = false;
         this.$nextTick(() => {
           this.isRouterAlive = true
         })
-      },
-      dropOut() {
-        let sessionsId = JSON.parse(sessionStorage.getItem("userInfo")).session_id;
-        axios({
-          method: 'DELETE',
-          url: `${baseURL}/v1/sessions/${sessionsId}`,
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          }
-        }).then(res => {
-          sessionStorage.removeItem('loginInfo');
-          sessionStorage.removeItem('userInfo');
-          /*document.cookie = `token=;expires=${new Date(0)}`;
-          document.cookie = `user_id=;expires=${new Date(0)}`;*/
-          document.cookie = `token=;expires=${new Date(0)};domain=.launchain.org`;
-          document.cookie = `user_id=;expires=${new Date(0)};domain=.launchain.org`;
-          this.switchover = false;
-          location.reload()
-        }).catch(error => {
-          console.log(error);
-        })
-      },
-      toggle() {
-        this.switchover = !this.switchover
-      },
-      leaveUl() {
-        this.switchover = false
-      },
-      platform(index) {
-        if (index === 0) {
-          window.location.href = searchPlatform
-        } else if (index === 1) {
-          window.location.href = exchangePlatform
-        } else if (index === 2) {
-          window.location.href = transferPlatform
-        }
-      },
-      open() {
-        this.$confirm('此操作需要先登录, 是否登录?', '提示', {
-          confirmButtonText: '是',
-          cancelButtonText: '否',
-          type: 'warning',
-          center: true
-        }).then(() => {
-          this.$router.push("/login")
-        }).catch(() => {
-        });
-      },
-      acquireFavoriteCount() {
-        axios({
-          method: "GET",
-          url: `${baseURL}/v1/shopcart/count/${this.userId}`,
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }).then((res) => {
-          this.$store.state.favoriteCount = res.data;
-        }).catch((err) => {
-          console.log(err);
-        })
-      },
-      turnFavorite() {
-        if (JSON.parse(sessionStorage.getItem("loginInfo"))) {
-          this.$router.push("/favorite")
-        } else {
-          this.open()
-        }
       },
     }
   }
@@ -361,202 +99,6 @@
     display: flex;
     flex-direction: column;
   }
-  
-  /*.head-wrap {
-    width: 100%;
-    min-width 1212px
-    height: 50px;
-    background-color: #d91e01;
-    z-index: 9999;
-    .head {
-      box-sizing: border-box
-      width: 1212px;
-      height 50px
-      margin: 0 auto;
-      text-align right
-      line-height 50px
-      font-size 0
-      a {
-        color: #ffffff;
-        font-size 12px
-      }
-      .logo {
-        display inline-block
-        color #ffffff
-        background-image: url('./common/images/logo.png');
-        background-position: top center;
-        background-repeat: no-repeat;
-        width 150px
-        height 46px
-        float left
-        margin-top 2px
-        margin-left 6px
-        position relative
-        vertical-align top
-        p {
-          line-height 20px
-          font-size 12px
-          position absolute
-          left 50px
-          bottom 0
-        }
-        
-      }
-      .platform {
-        box-sizing border-box
-        display inline-block
-        text-align left
-        width 770px
-        height 50px
-        font-size 0
-        //padding-left 100px
-        vertical-align top
-        padding-top 1px
-        li {
-          display inline-block
-          text-align center
-          width 106px
-          height 48px
-          line-height 48px
-          font-size: 16px;
-          color: #f3f3f3;
-          cursor pointer
-        }
-        li:active {
-          background-color #ffffff
-          color: #d91e01;
-        }
-        .active {
-          background-color #ffffff
-          color: #d91e01;
-        }
-      }
-      .favorite {
-        margin-left 20px
-        box-sizing border-box
-        display: inline-block
-        cursor pointer
-        margin-right 20px
-        width 100px
-        height 24px
-        line-height 24px
-        border 1px solid #ffffff
-        background-image: url('./common/images/like.png');
-        background-position: top 5px left 10px;
-        background-repeat: no-repeat;
-        background-color #d91e01
-        color #ffffff
-        font-size 0
-        position relative
-        text-align left
-        .s_text {
-          padding-left 30px
-          display inline-block
-          font-size 12px
-        }
-        .s_num {
-          width 16px
-          height 16px
-          line-height 16px
-          text-align center
-          display inline-block
-          color #d91e01
-          background-color #ffffff
-          border-radius 50%
-          position absolute
-          top 2px
-          right 10px
-          text-align center
-          overflow hidden
-          font-size 10px
-        }
-      }
-      .no_login {
-        vertical-align top
-        display inline-block
-        width 160px
-        height 50px
-        a {
-          font-size 12px
-          margin-left 28px
-          color: #ffffff;
-        }
-      }
-      .login {
-        display inline-block
-        cursor pointer
-        width 160px
-        height 50px
-        position relative
-        color #ffffff
-        vertical-align top
-        font-size 12px
-        img {
-          vertical-align top
-          margin-top 18px
-        }
-        ul {
-          background-color #ffffff
-          position absolute
-          top 50px
-          right 0
-          text-align center
-          width 86px
-          li {
-            height 40px
-            color #666666
-            a {
-              color #666666
-            }
-          }
-          li:hover {
-            color #d91e01
-            a {
-              color #d91e01
-            }
-          }
-        }
-      }
-    }
-  }
-  */
-  /*.login-header {
-    width: 100%;
-    height: 130px;
-    background-color: #f3f3f3;
-    .login-header-cont {
-      width: 1200px;
-      margin: 0 auto;
-      height: 100%;
-      padding-top 36px
-      img {
-        width: 280px;
-        height: 58px;
-        display: inline-block;
-      }
-    }
-  }
-  */
-  /*.forget_psw_header {
-    width: 100%;
-    height: 130px;
-    background-color: #f3f3f3;
-    section {
-      width: 1200px;
-      margin: 0 auto;
-      padding-top: 36px;
-      p {
-        float: right;
-        margin-top: 36px;
-        font-size: 16px;
-        color: #222222;
-        .to_login {
-          color: #c6351e;
-        }
-      }
-    }
-  }
-  */
   .main_wrap {
     flex: 1;
     box-sizing: border-box;

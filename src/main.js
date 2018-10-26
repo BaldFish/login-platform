@@ -16,7 +16,11 @@ import '@/common/js/validate.js'
 Vue.config.productionTip = false;
 /* eslint-disable no-new */
 const store = new Vuex.Store({
-  state: {},
+  state: {
+    url:"",
+    redirectURL:"",
+    
+  },
   mutations: {}
 });
 new Vue({

@@ -2,13 +2,13 @@
   <div class="login-container">
     <div class="login-header">
       <div class="login-header-cont">
-        <a :href="url">
+        <a :href="redirectURL">
           <img src="@/common/images/login_header.png" alt="">
         </a>
       </div>
     </div>
     <div class="login-content">
-      <div class="site_box">
+      <!--<div class="site_box">
         <div class="site">
           <ul>
             <li>当前位置 ：</li>
@@ -17,7 +17,7 @@
             <li><a href="/login">登录</a></li>
           </ul>
         </div>
-      </div>
+      </div>-->
       <div class="content-box">
         <div class="content-mid">
           <img src="./images/login_content.png" alt="">
@@ -75,9 +75,9 @@
                   </li>
                 </ul>
               </section>
-              <router-link to="/forgetPassword" class="to_forget"><p>忘记密码？</p></router-link>
-              <router-link to="" class="to_login"><span @click="login">登录</span></router-link>
-              <router-link to="/register" class="to_register"><p>还没有账号，立即注册</p></router-link>
+              <div class="to_forget"><p>忘记密码？</p></div>
+              <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
+              <a href="javascript:void(0)" class="to_register"><p>还没有账号，立即注册</p></a>
             </div>
           </div>
         </div>
@@ -97,7 +97,6 @@
     components: {},
     data() {
       return {
-        url:"",
         toggleIndex: 0,
         loginWay: true,
         codeValue: true,
@@ -120,6 +119,15 @@
     },
     watch: {},
     computed: {
+      forgetPassword(){
+        return `/forgetPassword${this.$store.state.url}`
+      },
+      redirectURL(){
+        return this.$store.state.redirectURL
+      },
+      register(){
+        return `/register${this.$store.state.url}`
+      },
       uuid() {
         var s = [];
         var hexDigits = "0123456789abcdef";
@@ -293,8 +301,7 @@
                   document.cookie = `user_id=${res.data.user_id};domain=.launchain.org`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
-                  this.$router.back(-1)
-                  //this.acquireUserInfo();
+                  window.location.href=this.redirectURL
                 }).catch(error => {
                   console.log(error);
                   //错误提示
@@ -322,7 +329,6 @@
             captcha_id: this.captcha_id, //图片验证码ID
             captcha_number: this.captcha_number_right //图片验证码--图片
           };
-          
           this.$validator.validateAll({
             mobileRight: this.phoneRight,
             captcha_number_right: this.captcha_number_right,
@@ -345,8 +351,7 @@
                   document.cookie = `user_id=${res.data.user_id};domain=.launchain.org`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
-                  this.$router.back(-1)
-                  //this.acquireUserInfo();
+                  window.location.href=this.redirectURL
                 }).catch(error => {
                   console.log(error);
                   //错误提示
@@ -365,21 +370,6 @@
           })
         }
       },
-      /*acquireUserInfo() {
-        axios({
-          method: "GET",
-          url: `${baseURL}/v1/users/${this.userId}`,
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }).then((res) => {
-          res.data.phone = res.data.phone.substr(3, 3) + "***" + res.data.phone.substr(10, 4);
-          window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-          this.$router.back(-1)
-        }).catch((err) => {
-          console.log(err);
-        });
-      },*/
     }
   }
 </script>
