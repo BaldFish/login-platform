@@ -2,16 +2,16 @@
   <div>
     <div class="forget_psw_header">
       <section>
-        <a :href="url">
+        <a :href="redirectURL">
           <img src="@/common/images/forget_psw_logo.png" alt="">
         </a>
         <p>已有账号，立即
-          <a :href="url" class="to_login">登录</a>
+          <a :href="login" class="to_login">登录</a>
         </p>
       </section>
     </div>
     <div class="forget_psw_body">
-      <div class="site_box">
+      <!--<div class="site_box">
         <div class="site">
           <ul>
             <li>当前位置 ：</li>
@@ -20,7 +20,7 @@
             <li><a href="/forgetPassword">找回密码</a></li>
           </ul>
         </div>
-      </div>
+      </div>-->
       <div class="forget_psw_content">
         <section class="forget_psw_sec" v-if="stepOne">
           <div class="sec_step">
@@ -93,7 +93,7 @@
             <span class="caption"><span class="line line-l"></span>请牢记您的密码<span class="line line-r"></span></span>
           </div>
           <div class="next_btn step_two_three">
-            <router-link to="/home">返回首页</router-link>
+            <a :href="login">返回登录</a>
           </div>
         </section>
       </div>
@@ -112,7 +112,6 @@
     components: {},
     data() {
       return {
-        url:"",
         codeValue: true,
         second: 60,// 发送验证码倒计时
         stepOne: true,
@@ -130,6 +129,12 @@
       };
     },
     computed: {
+      redirectURL:function(){
+        return this.$store.state.redirectURL
+      },
+      login:function(){
+        return `/login${this.$store.state.url}`
+      },
       uuid() {
         var s = [];
         var hexDigits = "0123456789abcdef";
@@ -528,7 +533,7 @@
     }
   }
   
-  .site_box {
+  /*.site_box {
     margin 0 auto
     width 100%
     background-color: #e7e7e7;
@@ -550,5 +555,5 @@
         }
       }
     }
-  }
+  }*/
 </style>

@@ -2,16 +2,16 @@
   <div>
     <div class="forget_psw_header">
       <section>
-        <a :href="url">
+        <a :href="redirectURL">
           <img src="@/common/images/register_logo.png" alt="">
         </a>
         <p>已有账号，立即
-          <a :href="url" class="to_login">登录</a>
+          <a :href="login" class="to_login">登录</a>
         </p>
       </section>
     </div>
     <div class="forget_psw_body">
-      <div class="site_box">
+      <!--<div class="site_box">
         <div class="site">
           <ul>
             <li>当前位置 ：</li>
@@ -20,7 +20,7 @@
             <li><a href="/register">注册</a></li>
           </ul>
         </div>
-      </div>
+      </div>-->
       <div class="forget_psw_content">
         <section class="forget_psw_sec" v-if="stepOne">
           <div class="sec_step">
@@ -124,7 +124,7 @@
           </div>
           <img src="./images/success.png" class="sc_bg" alt="">
           <div class="success_to_home">
-            <router-link to="/home"></router-link>
+            <a :href="login"></a>
           </div>
         </section>
       </div>
@@ -177,6 +177,12 @@
     },
     watch: {},
     computed:{
+      redirectURL:function(){
+        return this.$store.state.redirectURL
+      },
+      login:function(){
+        return `/login${this.$store.state.url}`
+      },
       uuid() {
         var s = [];
         var hexDigits = "0123456789abcdef";
@@ -660,7 +666,7 @@
     }
   }
   
-  .site_box {
+  /*.site_box {
     margin 0 auto
     width 100%
     background-color: #e7e7e7;
@@ -682,5 +688,5 @@
         }
       }
     }
-  }
+  }*/
 </style>

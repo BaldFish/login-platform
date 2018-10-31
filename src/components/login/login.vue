@@ -75,9 +75,9 @@
                   </li>
                 </ul>
               </section>
-              <div class="to_forget"><p>忘记密码？</p></div>
+              <div class="to_forget"><a :href="forgetPassword">忘记密码？</a></div>
               <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
-              <a href="javascript:void(0)" class="to_register"><p>还没有账号，立即注册</p></a>
+              <div class="to_register"><a :href="register">还没有账号，立即注册</a></div>
             </div>
           </div>
         </div>
@@ -119,13 +119,13 @@
     },
     watch: {},
     computed: {
-      forgetPassword(){
+      forgetPassword:function(){
         return `/forgetPassword${this.$store.state.url}`
       },
-      redirectURL(){
+      redirectURL:function(){
         return this.$store.state.redirectURL
       },
-      register(){
+      register:function(){
         return `/register${this.$store.state.url}`
       },
       uuid() {
@@ -314,7 +314,6 @@
                       })
                     }
                   })
-                  
                 })
               }
             }
@@ -510,14 +509,6 @@
     cursor: pointer;
   }
   
-  .to_forget p {
-    width: 388px;
-    text-align: right;
-    margin-top: -5px;
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 20px;
-  }
   
   .to_login span {
     font-size: 18px;
@@ -529,13 +520,6 @@
     background-color: #c7361e;
     display: inline-block;
     margin-bottom: 12px;
-  }
-  
-  .to_register p {
-    width: 380px;
-    text-align: center;
-    font-size: 16px;
-    color: #666666;
   }
   
   .phone-login li:nth-child(1) i {
@@ -612,7 +596,7 @@
     }
   }
   
-  .site_box {
+  /*.site_box {
     margin 0 auto
     width 100%
     background-color: #e7e7e7;
@@ -633,6 +617,30 @@
           }
         }
       }
+    }
+  }*/
+  .to_forget{
+    width 380px
+    height 36px
+    text-align right
+    a{
+      display inline-block
+      height 20px
+      line-height 20px
+      font-size: 16px;
+      color: #666666;
+      margin-top 8px
+    }
+  }
+  .to_register{
+    width 380px
+    text-align center
+    a {
+      display inline-block
+      height 20px
+      line-height 20px
+      font-size: 16px;
+      color: #666666;
     }
   }
 </style>
