@@ -17,6 +17,11 @@
           </ul>
         </div>
         <div class="ft-box">
+          <ul class="text">
+            <li @click="centerDialogVisible = true">意见和建议</li>
+          </ul>
+        </div>
+        <div class="ft-box">
           <ul class="code">
             <li>
               <a href="javascript:void(0)">
@@ -53,6 +58,7 @@
     },
     data() {
       return {
+        centerDialogVisible: false,
         url:"",
         isRouterAlive: true,
         userId: '',
@@ -187,6 +193,12 @@
             top: 50%;
             transform: translateY(-50%);
           }
+        }
+      }
+      .ft-box:nth-child(3){
+        margin-left 130px
+        li{
+          cursor pointer
         }
       }
       .ft-box:last-child {
