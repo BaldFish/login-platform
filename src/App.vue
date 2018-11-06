@@ -181,13 +181,13 @@
           font-size: 0px;
           color: #c6351e;
           display: table-cell;
-          width: 150px;
+          width: 200px;
           height: 150px;
           vertical-align: top;
           text-align: center;
           img {
             vertical-align: top;
-            max-width 150px
+            max-width 200px
             max-height 150px
             position: relative;
             top: 50%;
@@ -199,6 +199,8 @@
         margin-left 130px
         li{
           cursor pointer
+          border 1px solid #ffffff
+          padding 4px
         }
       }
       .ft-box:last-child {
