@@ -25,7 +25,7 @@
             <div class="right-details">
               <ul class="content-nav">
                 <!--<li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>-->
-                <li :class="{'nav-avtive': loginWay,'nav-unavtive':!loginWay }">免密登录</li>
+                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录</li>
               </ul>
               <!--<section class="account-login" v-show="!loginWay">
                 <ul>
@@ -49,7 +49,7 @@
                   </li>
                 </ul>
               </section>-->
-              <section class="account-login phone-login" v-show="loginWay">
+              <section class="account-login phone-login" v-show="!loginWay">
                 <ul>
                   <li>
                     <i></i>
@@ -98,7 +98,7 @@
     data() {
       return {
         toggleIndex: 0,
-        loginWay: true,
+        loginWay: false,
         codeValue: true,
         isDisabled: true,
         captchaNotice: false,//校验图形码是否正确
@@ -119,8 +119,8 @@
     },
     watch: {},
     computed: {
-      forgetPassword:function(){
-        return `/forgetPassword${this.$store.state.url}`
+      createWallet:function(){
+        return `/createWallet${this.$store.state.url}`
       },
       redirectURL:function(){
         return this.$store.state.redirectURL
@@ -350,7 +350,11 @@
                   document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
-                  window.location.href=this.redirectURL
+                  if(res.data.wallet_address){
+                    window.location.href=this.redirectURL
+                  }else{
+                    this.$router.push(this.createWallet)
+                  }
                 }).catch(error => {
                   console.log(error);
                   //错误提示

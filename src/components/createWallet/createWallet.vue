@@ -17,18 +17,18 @@
             <ul>
               <li>
                 <i></i>
-                <input type="password" placeholder="请输入6位数字交易密码" v-model="password" v-validate="'required'" name='paymentCode'>
+                <input type="password" placeholder="请输入6位数字交易密码" v-model="paymentCode" v-validate="'required|code'" name='paymentCode'>
                 <span v-show="errors.has('paymentCode')" class="error_password">{{errors.first('paymentCode')}}</span>
               </li>
               <li>
                 <i></i>
-                <input type="password" placeholder="请再次输入6位数字交易密码" v-model="repassword" v-validate="'required|confirmed:password'"
+                <input type="password" placeholder="请再次输入6位数字交易密码" v-model="repaymentCode" v-validate="'required|confirmed:paymentCode'"
                        name='repaymentCode'>
                 <span v-show="errors.has('repaymentCode')" class="error_password">{{errors.first('repaymentCode')}}</span>
               </li>
             </ul>
           </div>
-          <div class="next_btn step_two_btn"><span>提交</span></div>
+          <div class="next_btn step_two_btn" @click="submitPassword"><span>提交</span></div>
         </section>
       </div>
     </div>
@@ -45,6 +45,8 @@
     components: {},
     data(){
       return {
+        paymentCode:"",
+        repaymentCode:"",
         url:"",
         toggleIndex: 0,
         codeValue:true,
@@ -101,6 +103,31 @@
       }
     },
     methods: {
+      //提交交易密码
+      submitPassword(){
+        this.$validator.validateAll({
+          paymentCode: this.paymentCode,
+          repaymentCode: this.repaymentCode,
+        }).then((result) => {
+            //校验input输入值
+            if (result) {
+              let passwordData = {
+                phone: JSON.parse(sessionStorage.getItem("loginInfo")).phone, //手机号
+                phrase: this.paymentCode, //密码
+                platform: 1,
+              };
+              axios({
+                method: 'post',
+                url: `${baseURL}/v1/inner-keystore`,
+                data: querystring.stringify(passwordData)
+              }).then(res => {
+                window.location.href=this.redirectURL
+              }).catch(error => {
+                console.log(error);
+              })
+            }
+        })
+      },
       radioChange(){
         this.showNotice = false;
         this.isChecked = 'checked'

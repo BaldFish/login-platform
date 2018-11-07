@@ -43,9 +43,9 @@ const dictionary = {
 Validator.updateDictionary(dictionary);
 
 //自定义的校验规则
-Validator.extend('paymentCode', {
+Validator.extend('code', {
   messages: {
-    zh_CN: (field) => '请输入正确的交易密码'
+    zh_CN: (field) => '请输入6位数字交易密码'
   },
   validate: value => {
     return value.length == 6 && /^\d{6}$/.test(value);
