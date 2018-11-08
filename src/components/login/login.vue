@@ -597,7 +597,7 @@
       height: 100%;
       padding-top 36px
       img {
-        width: 346px;
+        width: 382px;
         height: 58px;
         display: inline-block;
       }
