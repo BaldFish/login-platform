@@ -20,14 +20,14 @@
       </div>-->
       <div class="content-box">
         <div class="content-mid">
-          <img src="./images/login_content.png" alt="">
+          <img src="@/common/images/login_content.png" alt="">
           <div class="content-right">
             <div class="right-details">
               <ul class="content-nav">
-                <li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>
-                <li @click="tabChange" :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录</li>
+                <!--<li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>-->
+                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录</li>
               </ul>
-              <section class="account-login" v-show="loginWay">
+              <!--<section class="account-login" v-show="!loginWay">
                 <ul>
                   <li>
                     <i></i>
@@ -48,7 +48,7 @@
                     <span v-show="captchaNotice" class="error">图形验证码错误</span>
                   </li>
                 </ul>
-              </section>
+              </section>-->
               <section class="account-login phone-login" v-show="!loginWay">
                 <ul>
                   <li>
@@ -75,9 +75,9 @@
                   </li>
                 </ul>
               </section>
-              <div class="to_forget"><a :href="forgetPassword">忘记密码？</a></div>
+              <!--<div class="to_forget"><a :href="forgetPassword">忘记密码？</a></div>-->
               <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
-              <div class="to_register"><a :href="register">还没有账号，立即注册</a></div>
+              <!--<div class="to_register"><a :href="register">还没有账号，立即注册</a></div>-->
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@
     data() {
       return {
         toggleIndex: 0,
-        loginWay: true,
+        loginWay: false,
         codeValue: true,
         isDisabled: true,
         captchaNotice: false,//校验图形码是否正确
@@ -119,8 +119,8 @@
     },
     watch: {},
     computed: {
-      forgetPassword:function(){
-        return `/forgetPassword${this.$store.state.url}`
+      createWallet:function(){
+        return `/createWallet${this.$store.state.url}`
       },
       redirectURL:function(){
         return this.$store.state.redirectURL
@@ -350,7 +350,11 @@
                   document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
-                  window.location.href=this.redirectURL
+                  if(res.data.wallet_address){
+                    window.location.href=this.redirectURL
+                  }else{
+                    this.$router.push(this.createWallet)
+                  }
                 }).catch(error => {
                   console.log(error);
                   //错误提示
@@ -416,17 +420,20 @@
   }
   
   .content-nav {
+    width: 380px;
     height: 48px;
     margin-bottom: 20px;
+    text-align: center;
   }
   
   .content-nav li {
+    display: inline-block;
     font-size: 20px;
     color: #222222;
     height: 44px;
-    width: 190px;
-    float: left;
-    text-align: center;
+    /*width: 190px;*/
+    /*float: left;*/
+    /*text-align: center;*/
     border-bottom: 4px solid #313131;
     cursor: pointer;
   }
@@ -519,6 +526,7 @@
     line-height: 40px;
     background-color: #c7361e;
     display: inline-block;
+    margin-top: 30px;
     margin-bottom: 12px;
   }
   
@@ -589,7 +597,7 @@
       height: 100%;
       padding-top 36px
       img {
-        width: 280px;
+        width: 346px;
         height: 58px;
         display: inline-block;
       }

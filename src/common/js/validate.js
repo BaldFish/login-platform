@@ -35,12 +35,22 @@ const dictionary = {
       code:'手机验证码',
       password:'密码',
       repassword:'重复密码',
+      paymentCode:"交易密码",
+      repaymentCode:"重复交易密码",
     }
   }
 };
 Validator.updateDictionary(dictionary);
 
 //自定义的校验规则
+Validator.extend('code', {
+  messages: {
+    zh_CN: (field) => '请输入6位数字交易密码'
+  },
+  validate: value => {
+    return value.length == 6 && /^\d{6}$/.test(value);
+  }
+});
 Validator.extend('email', {
   messages: {
     zh_CN: (field) => '请填写有效的邮箱地址'
