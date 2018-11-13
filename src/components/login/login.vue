@@ -25,7 +25,7 @@
             <div class="right-details">
               <ul class="content-nav">
                 <!--<li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>-->
-                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录</li>
+                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录注册</li>
               </ul>
               <!--<section class="account-login" v-show="!loginWay">
                 <ul>
@@ -344,10 +344,10 @@
                   url: `${baseURL}/v1/sessions/phone`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  /*document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;*/
-                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
+                  document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;
+                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){
@@ -597,7 +597,7 @@
       height: 100%;
       padding-top 36px
       img {
-        width: 382px;
+        width: 409px;
         height: 58px;
         display: inline-block;
       }

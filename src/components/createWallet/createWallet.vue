@@ -38,37 +38,40 @@
 <script>
   import axios from "axios";
   import {baseURL} from '@/common/js/public.js';
+  import utils from "@/common/js/utils.js";
+  
   const querystring = require('querystring');
-
-  export default{
-    name: "login",
+  
+  export default {
+    name: "createWallet",
     components: {},
-    data(){
+    data() {
       return {
-        paymentCode:"",
-        repaymentCode:"",
-        url:"",
+        paymentCode: "",
+        repaymentCode: "",
+        url: "",
         toggleIndex: 0,
-        codeValue:true,
-        second:60, //发送验证码倒计时
-        stepOne:false,
-        stepTwo:true,
-        stepThree:false,
-        stepFour:false,
-        captchaNotice:false,//校验图形码是否正确
-        codeNotice:false,//校验短信码是否正确
-        authNotice:false,//校验姓名&身份证是否匹配
-        isChecked:'',
-        showNotice:false,//合同协议--校验用
-        phone:"", //手机号
-        captcha_number:"", //图形验证码
-        captcha_id:"", //图形验证码--ID
-        captcha:"../login/images/code.png", //图形验证码--图片
-        code:"", //短信验证码
-        password:"", //密码
-        repassword:"", //重复密码
-        realname:"", //姓名
-        idcard:"" //身份证号
+        codeValue: true,
+        second: 60, //发送验证码倒计时
+        stepOne: false,
+        stepTwo: true,
+        stepThree: false,
+        stepFour: false,
+        captchaNotice: false,//校验图形码是否正确
+        codeNotice: false,//校验短信码是否正确
+        authNotice: false,//校验姓名&身份证是否匹配
+        isChecked: '',
+        showNotice: false,//合同协议--校验用
+        phone: "", //手机号
+        captcha_number: "", //图形验证码
+        captcha_id: "", //图形验证码--ID
+        captcha: "../login/images/code.png", //图形验证码--图片
+        code: "", //短信验证码
+        password: "", //密码
+        repassword: "", //重复密码
+        realname: "", //姓名
+        idcard: "", //身份证号
+        token:"",
       };
     },
     mounted() {
@@ -76,16 +79,17 @@
       //如果getCaptcha函数要执行，必须先执行钩子函数
       //这个钩子函数完成了对getCaptcha函数的调用
       //应该注意的是，使用mounted 并不能保证钩子函数中的 this.$el 在 document 中。为此还应该引入Vue.nextTick/vm.$nextTick
-      this.$nextTick( ()=> {
+      this.$nextTick(() => {
         this.getCaptcha()
-      })
+      });
+      this.token=utils.getCookie("token");
     },
     watch: {},
-    computed:{
-      redirectURL:function(){
+    computed: {
+      redirectURL: function () {
         return this.$store.state.redirectURL
       },
-      login:function(){
+      login: function () {
         return `/login${this.$store.state.url}`
       },
       uuid() {
@@ -97,50 +101,54 @@
         s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
         s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
         s[8] = s[13] = s[18] = s[23] = "-";
-
+        
         var uuid = s.join("");
         return uuid;
       }
     },
     methods: {
       //提交交易密码
-      submitPassword(){
+      submitPassword() {
         this.$validator.validateAll({
           paymentCode: this.paymentCode,
           repaymentCode: this.repaymentCode,
         }).then((result) => {
-            //校验input输入值
-            if (result) {
-              let passwordData = {
-                phone: JSON.parse(sessionStorage.getItem("loginInfo")).phone, //手机号
-                phrase: this.paymentCode, //密码
-                platform: 1,
-              };
-              axios({
-                method: 'post',
-                url: `${baseURL}/v1/inner-keystore`,
-                data: querystring.stringify(passwordData)
-              }).then(res => {
-                window.location.href=this.redirectURL
-              }).catch(error => {
-                console.log(error);
-              })
-            }
+          //校验input输入值
+          if (result) {
+            let passwordData = {
+              phone: JSON.parse(sessionStorage.getItem("loginInfo")).phone, //手机号
+              phrase: this.paymentCode, //密码
+              platform: 1,
+            };
+            axios({
+              method: 'post',
+              url: `${baseURL}/v1/inner-keystore`,
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Access-Token": this.token
+              },
+              data: querystring.stringify(passwordData)
+            }).then(res => {
+              window.location.href = this.redirectURL
+            }).catch(error => {
+              console.log(error);
+            })
+          }
         })
       },
-      radioChange(){
+      radioChange() {
         this.showNotice = false;
         this.isChecked = 'checked'
       },
       //获取图片验证码--图片
-      getCaptcha(){
+      getCaptcha() {
         axios({
           method: 'post',
           url: `${baseURL}/v1/captcha`,
           data: querystring.stringify({})
         }).then(res => {
           this.captcha = `data:image/png;base64,${res.data.png}`;
-          this.captcha_id =res.data.captcha_id;
+          this.captcha_id = res.data.captcha_id;
           //校验图形验证码
           this.captchaError();
         }).catch(error => {
@@ -149,11 +157,11 @@
       },
       //获取短信验证码
       getCode() {
-        if(this.phone){
+        if (this.phone) {
           //倒计时
           let me = this;
           me.codeValue = false;
-          let interval = window.setInterval(function() {
+          let interval = window.setInterval(function () {
             if ((me.second--) <= 0) {
               me.second = 60;
               me.codeValue = true;
@@ -165,19 +173,19 @@
             method: 'post',
             url: `${baseURL}/v1/sms/code`,
             data: querystring.stringify({
-              phone:"+86"+this.phone, //手机号
-              type:1 //1-注册，2-修改密码, 3-登录
+              phone: "+86" + this.phone, //手机号
+              type: 1 //1-注册，2-修改密码, 3-登录
             })
           }).then(res => {
-
+          
           }).catch(error => {
             console.log(error);
           })
         }
       },
       //校验图形验证码
-      captchaError(){
-        if(this.captcha_number){
+      captchaError() {
+        if (this.captcha_number) {
           axios({
             method: 'get',
             url: `${baseURL}/v1/captcha/${this.captcha_id}/code/${this.captcha_number}`
@@ -187,13 +195,13 @@
             console.log(error);
             this.captchaNotice = true
           });
-        }else{
+        } else {
           this.captchaNotice = false
         }
       },
       //校验短信验证码
-      codeError(){
-        if(this.code){
+      codeError() {
+        if (this.code) {
           axios({
             method: 'get',
             url: `${baseURL}/v1/sms/+86${this.phone}/code/${this.code}`
@@ -203,54 +211,54 @@
             console.log(error);
             this.codeNotice = true
           });
-        }else{
+        } else {
           this.codeNotice = false
         }
       },
       //validate校验出现，Name&idCard不匹配消失
-      authError(){
+      authError() {
         this.authNotice = false
       },
-      nextStep(id){
-        if (id == 2){
-          this.$validator.validateAll().then((result)=>{
+      nextStep(id) {
+        if (id == 2) {
+          this.$validator.validateAll().then((result) => {
             //校验是否正确：图形验证码、短信验证码
-            if (this.captchaNotice || this.codeNotice){
+            if (this.captchaNotice || this.codeNotice) {
               return false
-            }else{
+            } else {
               //校验input输入值&服务协议checked
-              if(result && this.isChecked == 'checked'){
+              if (result && this.isChecked == 'checked') {
                 //进入下一步
                 this.stepTwo = true;
                 this.stepOne = false;
-              }else{
-                if (this.isChecked == 'checked'){
+              } else {
+                if (this.isChecked == 'checked') {
                   this.showNotice = false;
-                } else{
+                } else {
                   this.showNotice = true;
                 }
               }
             }
           })
-        } else if(id == 3){
+        } else if (id == 3) {
           let regFormData = {
-            phone:"+86"+this.phone, //手机号
+            phone: "+86" + this.phone, //手机号
             captcha_number: this.captcha_number, //图形验证码
             captcha_id: this.captcha_id, //图形验证码ID
             code: this.code, //短信验证码
             password: this.password, //密码
             repassword: this.repassword, //重复密码
-            device_id:this.uuid, //设备ID
-            platform:1
+            device_id: this.uuid, //设备ID
+            platform: 1
           };
-          this.$validator.validateAll().then((result)=>{
-            if(result){
+          this.$validator.validateAll().then((result) => {
+            if (result) {
               axios({
                 method: 'post',
                 url: `${baseURL}/v1/users`,
                 data: querystring.stringify(regFormData)
               }).then(res => {
-                sessionStorage.setItem("regInfo",JSON.stringify(res.data));
+                sessionStorage.setItem("regInfo", JSON.stringify(res.data));
                 //进入下一步
                 this.stepOne = false;
                 this.stepTwo = false;
@@ -260,16 +268,16 @@
               })
             }
           })
-        }else {
+        } else {
           let authFormData = {
-            type:1, //1-实名认证，2-人像认证
+            type: 1, //1-实名认证，2-人像认证
             realname: this.realname, //姓名
             idcard: this.idcard, //身份证号
           };
           let regInfo = JSON.parse(sessionStorage.getItem("regInfo"));
-
-          this.$validator.validateAll().then((result)=>{
-            if(result){
+          
+          this.$validator.validateAll().then((result) => {
+            if (result) {
               axios({
                 method: 'post',
                 url: `${baseURL}/v1/users/${regInfo.user._id}/authentication`,
@@ -288,7 +296,7 @@
           })
         }
       },
-      skipToStep(){
+      skipToStep() {
         this.stepOne = false;
         this.stepTwo = false;
         this.stepThree = false;
@@ -298,52 +306,61 @@
   }
 </script>
 <style scoped>
-  .forget_psw_body{
+  .forget_psw_body {
     background-color: #f3f3f3;
-    width:100%;
-    height:714px;
+    width: 100%;
+    height: 714px;
   }
-  .forget_psw_content{
+  
+  .forget_psw_content {
     width: 1212px;
     height: 645px;
     background-color: #ffffff;
-    margin:0 auto;
+    margin: 0 auto;
     position: relative;
-    top:34px;
+    top: 34px;
   }
-  .forget_psw_sec{
+  
+  .forget_psw_sec {
     /*height:90px;*/
     width: 380px;
-    margin:0 auto;
+    margin: 0 auto;
     padding-top: 58px;
   }
-  .sec_step span{
+  
+  .sec_step span {
     font-size: 16px;
     color: #7d7d7d;
     margin-top: 30px;
     display: inline-block;
   }
-  .step_color{
+  
+  .step_color {
     color: #c6351e !important;
   }
-  .sec_step span:nth-child(3){
+  
+  .sec_step span:nth-child(3) {
     margin-left: 66px;
     margin-right: 74px;
   }
-  .sec_step span:nth-child(4){
+  
+  .sec_step span:nth-child(4) {
     margin-right: 74px;
   }
-  .sec_input{
+  
+  .sec_input {
     margin-top: 40px;
     margin-left: 0px;
   }
-  .sec_input li{
+  
+  .sec_input li {
     width: 380px;
     height: 40px;
     background-color: #f3f3f3;
     margin-bottom: 15px;
   }
-  .sec_input li input{
+  
+  .sec_input li input {
     background-color: #f3f3f3;
     height: 24px;
     width: 210px;
@@ -352,12 +369,14 @@
     bottom: 17px;
     -webkit-box-shadow: 0 0 0px 1000px #f3f3f3 inset !important;
   }
-  .sec_input li:nth-child(1) input{
+  
+  .sec_input li:nth-child(1) input {
     position: relative;
     top: -16px;
-    width:328px;
+    width: 328px;
   }
-  .sec_input li:nth-child(1) i{
+  
+  .sec_input li:nth-child(1) i {
     width: 19px;
     height: 28px;
     display: inline-block;
@@ -366,7 +385,8 @@
     position: relative;
     margin: 6px 10.5px;
   }
-  .sec_input li:nth-child(2) i{
+  
+  .sec_input li:nth-child(2) i {
     width: 20px;
     height: 21px;
     display: inline-block;
@@ -375,7 +395,8 @@
     position: relative;
     margin: 10px 10px;
   }
-  .sec_input li:nth-child(3) i{
+  
+  .sec_input li:nth-child(3) i {
     width: 20px;
     height: 21px;
     display: inline-block;
@@ -384,14 +405,16 @@
     position: relative;
     margin: 10px 10px;
   }
-  .img_change_img{
+  
+  .img_change_img {
     width: 100px !important;
     height: 33px !important;
     float: right !important;
     margin: 4px 10px;
     cursor: pointer;
   }
-  .get_code{
+  
+  .get_code {
     border: solid 1px #c7361e;
     font-size: 14px;
     color: #c7361e;
@@ -399,7 +422,8 @@
     line-height: 35px;
     margin-top: 2px;
   }
-  .count_down{
+  
+  .count_down {
     background-color: #7d7d7d;
     font-size: 14px;
     color: #ffffff;
@@ -407,7 +431,8 @@
     line-height: 33px;
     margin-top: 3px;
   }
-  .next_btn{
+  
+  .next_btn {
     width: 380px;
     height: 40px;
     background-color: #c7361e;
@@ -420,10 +445,12 @@
     /*position: relative;
     top: 50px;*/
   }
-  .next_btn a{
+  
+  .next_btn a {
     color: #ffffff;
   }
-  .step_two li:nth-child(1) i{
+  
+  .step_two li:nth-child(1) i {
     width: 20px;
     height: 25px;
     background: url("../login/images/passwoer.png") no-repeat center;
@@ -431,7 +458,8 @@
     position: relative;
     margin: 7px 10px;
   }
-  .step_two li:nth-child(2) i{
+  
+  .step_two li:nth-child(2) i {
     width: 20px;
     height: 25px;
     background: url("../forgetPassword/images/passw_2.png") no-repeat center;
@@ -439,34 +467,41 @@
     position: relative;
     margin: 7px 10px;
   }
-  .step_two input{
+  
+  .step_two input {
     top: -14px !important;
     width: 328px !important;
   }
-  .step_three p{
+  
+  .step_three p {
     font-size: 22px;
     color: #222222;
-    margin:26px;
+    margin: 26px;
   }
-  .step_two_btn{
-    top:149px;
+  
+  .step_two_btn {
+    top: 149px;
   }
-  .step_two_three{
+  
+  .step_two_three {
     top: 38px;
   }
-  .contract{
+  
+  .contract {
     font-size: 14px;
     color: #999999;
     width: 380px;
     margin-top: 36px;
     margin-left: 128px;
   }
-  .contract span{
+  
+  .contract span {
     position: relative;
     bottom: 5px;
     left: 6px;
   }
-  .contract input{
+  
+  .contract input {
     width: 22px;
     height: 22px;
     position: relative;
@@ -475,7 +510,8 @@
     z-index: 10;
     cursor: pointer;
   }
-  .contract i{
+  
+  .contract i {
     width: 22px;
     height: 22px;
     display: inline-block;
@@ -483,11 +519,13 @@
     background-size: 100% 100%;
     position: relative;
   }
-  .contract input:checked +i{
+  
+  .contract input:checked + i {
     background: url("./images/guo.png") no-repeat center;
     background-size: 100% 100%;
   }
-  .step_three_icon li:nth-child(1) i{
+  
+  .step_three_icon li:nth-child(1) i {
     width: 20px;
     height: 24px;
     background: url("../login/images/id.png") no-repeat center;
@@ -495,7 +533,8 @@
     position: relative;
     margin: 7px 10px;
   }
-  .step_three_icon li:nth-child(2) i{
+  
+  .step_three_icon li:nth-child(2) i {
     width: 20px;
     height: 18px;
     background: url("./images/identity.png") no-repeat center;
@@ -503,29 +542,35 @@
     position: relative;
     margin: 10px;
   }
-  .step_three_icon li:nth-child(1) input{
+  
+  .step_three_icon li:nth-child(1) input {
     top: -12px;
   }
-  .step_three_icon li:nth-child(2) input{
+  
+  .step_three_icon li:nth-child(2) input {
     top: -13px;
-    width:328px;
+    width: 328px;
   }
-  .skip_btn{
+  
+  .skip_btn {
     width: 380px;
     height: 41px;
     border: solid 1px #c7361e;
     background-color: #ffffff;
     color: #c7361e;
-    top:91px;
+    top: 91px;
   }
-  .skip_btn_next{
-    top:106px;
+  
+  .skip_btn_next {
+    top: 106px;
   }
-  .sc_bg{
+  
+  .sc_bg {
     margin-left: 80px;
     margin-top: 60px;
   }
-  .success_to_home a{
+  
+  .success_to_home a {
     width: 180px;
     height: 50px;
     display: inline-block;
@@ -533,25 +578,29 @@
     bottom: 138px;
     left: 174px;
   }
-  .error{
+  
+  .error {
     position: relative;
     bottom: 36px;
     left: 390px;
     color: #c6351e;
     display: inline-block;
   }
-  .error_password{
+  
+  .error_password {
     position: relative;
     bottom: 33px;
     left: 390px;
     color: #c6351e;
     display: inline-block;
   }
-  .error-contract{
+  
+  .error-contract {
     bottom: 18px !important;
     left: 250px !important;
   }
-  .next_btn_top{
+  
+  .next_btn_top {
     width: 380px;
     height: 40px;
     background-color: #c7361e;
@@ -564,14 +613,16 @@
     position: relative;
     top: 36px;
   }
-  .error_auth{
+  
+  .error_auth {
     position: relative;
     bottom: 32px;
     left: 390px;
     color: #c6351e;
     display: inline-block;
   }
-  .contract_a{
+  
+  .contract_a {
     color: #c7361e;
   }
 </style>
@@ -595,8 +646,9 @@
       }
     }
   }
-  .forget_psw_body{
-    .sec_step{
+  
+  .forget_psw_body {
+    .sec_step {
       width 380px
       text-align center
     }
