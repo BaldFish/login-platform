@@ -25,7 +25,7 @@
             <div class="right-details">
               <ul class="content-nav">
                 <!--<li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>-->
-                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录注册</li>
+                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录/注册</li>
               </ul>
               <!--<section class="account-login" v-show="!loginWay">
                 <ul>
