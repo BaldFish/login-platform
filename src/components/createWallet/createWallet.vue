@@ -120,6 +120,13 @@
               phrase: this.paymentCode, //密码
               platform: 1,
             };
+            //加载蒙层
+            let loading = this.$loading({
+              lock: true,
+              text: '钱包创建中，请耐心等待......',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             axios({
               method: 'post',
               url: `${baseURL}/v1/inner-keystore`,
@@ -129,6 +136,7 @@
               },
               data: querystring.stringify(passwordData)
             }).then(res => {
+              loading.close();//关闭蒙层
               window.location.href = this.redirectURL
             }).catch(error => {
               console.log(error);
