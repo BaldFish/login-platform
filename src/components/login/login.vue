@@ -3,7 +3,7 @@
     <div class="login-header">
       <div class="login-header-cont">
         <a :href="redirectURL">
-          <img src="@/common/images/login_header.jpg" alt="">
+          <img src="@/common/images/login_header.png" alt="">
         </a>
       </div>
     </div>
