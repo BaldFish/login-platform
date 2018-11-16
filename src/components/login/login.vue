@@ -3,7 +3,7 @@
     <div class="login-header">
       <div class="login-header-cont">
         <a :href="redirectURL">
-          <img src="@/common/images/login_header.png" alt="">
+          <img src="@/common/images/login_header.jpg" alt="">
         </a>
       </div>
     </div>
@@ -597,7 +597,7 @@
       height: 100%;
       padding-top 36px
       img {
-        width: 412px;
+        width: 428px;
         height: 58px;
         display: inline-block;
       }
