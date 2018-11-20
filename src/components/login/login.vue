@@ -76,7 +76,7 @@
                   </li>
                 </ul>
               </section>
-              <div class="to_forget"><a href="/setPassword" v-if="nowIndex===1">忘记密码？</a></div>
+              <div class="to_forget"><a href="javascript:void(0)" @click="turnSetPassword" v-if="nowIndex===1">忘记密码？</a></div>
               <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
               <!--<div class="to_register"><a :href="register">还没有账号，立即注册</a></div>-->
             </div>
@@ -120,6 +120,9 @@
     },
     watch: {},
     computed: {
+      setPassword:function(){
+        return `/setPassword${this.$store.state.url}`
+      },
       createWallet:function(){
         return `/createWallet${this.$store.state.url}`
       },
@@ -268,6 +271,10 @@
         } else {
           this.codeNotice = false
         }
+      },
+      //跳转到设置密码页
+      turnSetPassword(){
+        this.$router.push(this.setPassword)
       },
       //登录
       login() {

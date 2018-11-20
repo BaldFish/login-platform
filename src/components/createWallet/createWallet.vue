@@ -470,7 +470,7 @@
   .step_two li:nth-child(2) i {
     width: 20px;
     height: 25px;
-    background: url("../forgetPassword/images/passw_2.png") no-repeat center;
+    background: url("../setPassword/images/passw_2.png") no-repeat center;
     background-size: 100% 100%;
     position: relative;
     margin: 7px 10px;

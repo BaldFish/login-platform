@@ -5,9 +5,9 @@
         <a :href="redirectURL">
           <img src="@/common/images/forget_psw_logo.png" alt="">
         </a>
-        <p>已有账号，立即
+        <!--<p>已有账号，立即
           <a :href="login" class="to_login">登录</a>
-        </p>
+        </p>-->
       </section>
     </div>
     <div class="forget_psw_body">
@@ -27,7 +27,7 @@
             <img src="./images/forget_psw_step01.png" alt="">
             <span class="step_color">输入手机号</span>
             <span>设置新密码</span>
-            <span>修改成功</span>
+            <span>设置成功</span>
           </div>
           <div class="sec_input">
             <ul>
@@ -60,7 +60,7 @@
             <img src="./images/forget_psw_step02.png" alt="">
             <span class="step_color">输入手机号</span>
             <span class="step_color">设置新密码</span>
-            <span>修改成功</span>
+            <span>设置成功</span>
           </div>
           <div class="sec_input step_two">
             <ul>
@@ -83,7 +83,7 @@
             <img src="./images/forget_psw_step03.png" alt="">
             <span class="step_color">输入手机号</span>
             <span class="step_color">设置新密码</span>
-            <span class="step_color">修改成功</span>
+            <span class="step_color">设置成功</span>
           </div>
           <div class="step_three">
             <img src="./images/sc.png" alt="">
@@ -92,8 +92,8 @@
           <div class="title">
             <span class="caption"><span class="line line-l"></span>请牢记您的密码<span class="line line-r"></span></span>
           </div>
-          <div class="next_btn step_two_three">
-            <a :href="login">返回登录</a>
+          <div class="next_btn step_two_three" @click="nextStep()">
+            <a href="javascript:void(0)">返回登录</a>
           </div>
         </section>
       </div>
@@ -108,7 +108,7 @@
   const querystring = require('querystring');
   
   export default {
-    name: "forgetPassword",
+    name: "setPassword",
     components: {},
     data() {
       return {
@@ -196,7 +196,6 @@
               type: 2 //1-注册，2-修改密码, 3-登录
             })
           }).then(res => {
-          
           }).catch(error => {
             console.log(error);
           })
@@ -244,8 +243,8 @@
               //校验input输入值
               if (result) {
                 //进入下一步
-                this.stepTwo = true;
                 this.stepOne = false;
+                this.stepTwo = true;
               }
             }
           })
@@ -276,6 +275,8 @@
               });
             }
           })
+        }else{
+          this.$router.push(this.login)
         }
       }
     }
