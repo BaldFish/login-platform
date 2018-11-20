@@ -24,32 +24,11 @@
           <div class="content-right">
             <div class="right-details">
               <ul class="content-nav">
-                <!--<li @click="tabChange" :class="{'nav-avtive': loginWay,'nav-unavtive': !loginWay}">手机登陆</li>-->
-                <li :class="{'nav-avtive': !loginWay,'nav-unavtive':loginWay }">免密登录/注册</li>
+                <li class="nav-unavtive" v-for="(item,index) of tabsParam" :class="{'nav-avtive': index===nowIndex,}"
+                    @click="tabChange(index)">{{item}}
+                </li>
               </ul>
-              <!--<section class="account-login" v-show="!loginWay">
-                <ul>
-                  <li>
-                    <i></i>
-                    <input type="text" placeholder="请输入手机号" v-model="phoneLeft" v-validate="'required|mobile'" name='mobile'>
-                    <span v-show="errors.has('mobile')" class="error" style="width: 200px">{{errors.first('mobile')}}</span>
-                  </li>
-                  <li>
-                    <i></i>
-                    <input type="password" placeholder="请输入密码" v-model="password" v-validate="'required'" name='password'>
-                    <span v-show="errors.has('password')" class="error">{{errors.first('password')}}</span>
-                  </li>
-                  <li>
-                    <i></i>
-                    <input type="text" placeholder="请输入验证码" v-model="captcha_number" v-validate="'required'" name='captcha_number'
-                           @blur="captchaError">
-                    <img class="img_change_img" @click="getCaptcha" :src="captcha">
-                    <span v-show="errors.has('captcha_number')" class="error">{{errors.first('captcha_number')}}</span>
-                    <span v-show="captchaNotice" class="error">图形验证码错误</span>
-                  </li>
-                </ul>
-              </section>-->
-              <section class="account-login phone-login" v-show="!loginWay">
+              <section class="account-login phone-login" v-if="nowIndex===0">
                 <ul>
                   <li>
                     <i></i>
@@ -75,7 +54,29 @@
                   </li>
                 </ul>
               </section>
-              <!--<div class="to_forget"><a :href="forgetPassword">忘记密码？</a></div>-->
+              <section class="account-login" v-show="nowIndex===1">
+                <ul>
+                  <li>
+                    <i></i>
+                    <input type="text" placeholder="请输入手机号" v-model="phoneLeft" v-validate="'required|mobile'" name='mobile'>
+                    <span v-show="errors.has('mobile')" class="error" style="width: 200px">{{errors.first('mobile')}}</span>
+                  </li>
+                  <li>
+                    <i></i>
+                    <input type="password" placeholder="请输入密码" v-model="password" v-validate="'required'" name='password'>
+                    <span v-show="errors.has('password')" class="error">{{errors.first('password')}}</span>
+                  </li>
+                  <li>
+                    <i></i>
+                    <input type="text" placeholder="请输入验证码" v-model="captcha_number" v-validate="'required'" name='captcha_number'
+                           @blur="captchaError">
+                    <img class="img_change_img" @click="getCaptcha" :src="captcha">
+                    <span v-show="errors.has('captcha_number')" class="error">{{errors.first('captcha_number')}}</span>
+                    <span v-show="captchaNotice" class="error">图形验证码错误</span>
+                  </li>
+                </ul>
+              </section>
+              <div class="to_forget"><a href="/setPassword" v-if="nowIndex===1">忘记密码？</a></div>
               <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
               <!--<div class="to_register"><a :href="register">还没有账号，立即注册</a></div>-->
             </div>
@@ -97,8 +98,8 @@
     components: {},
     data() {
       return {
-        toggleIndex: 0,
-        loginWay: false,
+        nowIndex: 0,
+        tabsParam:["免密登录/注册","密码登陆"],
         codeValue: true,
         isDisabled: true,
         captchaNotice: false,//校验图形码是否正确
@@ -160,8 +161,8 @@
       })
     },
     methods: {
-      tabChange() {
-        this.loginWay = !this.loginWay
+      tabChange(index) {
+        this.nowIndex = index
       },
       //获取图片验证码--图片
       getCaptcha() {
@@ -270,7 +271,7 @@
       },
       //登录
       login() {
-        if (this.loginWay) {
+        if (this.nowIndex===1) {
           let loginFormData = {
             phone: "+86" + this.phoneLeft, //手机号
             password: this.password, //密码
@@ -295,13 +296,17 @@
                   url: `${baseURL}/v1/sessions`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  /*document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;*/
-                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
+                  document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;
+                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
-                  window.location.href=this.redirectURL
+                  if(res.data.wallet_address){
+                    window.location.href=this.redirectURL
+                  }else{
+                    this.$router.push(this.createWallet)
+                  }
                 }).catch(error => {
                   console.log(error);
                   //错误提示
@@ -318,7 +323,7 @@
               }
             }
           })
-        } else {
+        } else if(this.nowIndex===0){
           let loginFormData = {
             phone: "+86" + this.phoneRight, //手机号
             password: this.password, //密码
@@ -344,10 +349,10 @@
                   url: `${baseURL}/v1/sessions/phone`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  /*document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;*/
-                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
+                  document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;
+                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){
@@ -446,6 +451,7 @@
   .nav-unavtive {
     color: #222222;
     border-bottom: 4px solid #313131;
+    width: 190px;
   }
   
   .account-login li {
@@ -526,7 +532,6 @@
     line-height: 40px;
     background-color: #c7361e;
     display: inline-block;
-    margin-top: 30px;
     margin-bottom: 12px;
   }
   
@@ -637,7 +642,7 @@
       line-height 20px
       font-size: 16px;
       color: #666666;
-      margin-top 8px
+      //margin-top 8px
     }
   }
   .to_register{
