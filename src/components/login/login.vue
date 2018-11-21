@@ -303,10 +303,10 @@
                   url: `${baseURL}/v1/sessions`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;
-                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
+                  /*document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;*/
+                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){
@@ -356,10 +356,10 @@
                   url: `${baseURL}/v1/sessions/phone`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;
-                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
+                  /*document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;*/
+                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){

@@ -256,6 +256,7 @@
             code: this.code, //短信验证码
             new: this.password, //新密码
             renew: this.repassword, //新密码
+            platform:1,//平台代号
           };
           this.$validator.validateAll({
               password:this.password,
