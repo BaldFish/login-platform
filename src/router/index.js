@@ -3,9 +3,6 @@ import Router from 'vue-router'
 import myLogin from '@/components/login/login'
 import myCreateWallet from '@/components/createWallet/createWallet'
 import mySetPassword from '@/components/setPassword/setPassword'
-/*
-import myRegister from '@/components/register/register'
-import myContract from '@/components/register/contract'*/
 Vue.use(Router);
 
 export default new Router({

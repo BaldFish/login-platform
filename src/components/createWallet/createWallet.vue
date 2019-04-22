@@ -330,7 +330,6 @@
   }
   
   .forget_psw_sec {
-    /*height:90px;*/
     width: 380px;
     margin: 0 auto;
     padding-top: 58px;
@@ -450,8 +449,6 @@
     line-height: 40px;
     cursor: pointer;
     margin-top: 90px;
-    /*position: relative;
-    top: 50px;*/
   }
   
   .next_btn a {

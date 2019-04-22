@@ -8,16 +8,6 @@
       </div>
     </div>
     <div class="login-content">
-      <!--<div class="site_box">
-        <div class="site">
-          <ul>
-            <li>当前位置 ：</li>
-            <li><a href="/">首页</a></li>
-            <li>&nbsp;>&nbsp;</li>
-            <li><a href="/login">登录</a></li>
-          </ul>
-        </div>
-      </div>-->
       <div class="content-box">
         <div class="content-mid">
           <img src="@/common/images/login_content.png" alt="">
@@ -78,7 +68,6 @@
               </section>
               <div class="to_forget"><a href="javascript:void(0)" @click="turnSetPassword" v-if="nowIndex===1">忘记密码？</a></div>
               <a href="javascript:void(0)" class="to_login"><span @click="login">登录</span></a>
-              <!--<div class="to_register"><a :href="register">还没有账号，立即注册</a></div>-->
             </div>
           </div>
         </div>
@@ -303,10 +292,10 @@
                   url: `${baseURL}/v1/sessions`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  /*document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;*/
-                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
+                  document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;
+                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){
@@ -356,10 +345,10 @@
                   url: `${baseURL}/v1/sessions/phone`,
                   data: querystring.stringify(loginFormData)
                 }).then(res => {
-                  /*document.cookie = `token=${res.data.token}`;
-                  document.cookie = `user_id=${res.data.user_id}`;*/
-                  document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
-                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;
+                  document.cookie = `token=${res.data.token}`;
+                  document.cookie = `user_id=${res.data.user_id}`;
+                  /*document.cookie = `token=${res.data.token};domain=.datajs.com.cn`;
+                  document.cookie = `user_id=${res.data.user_id};domain=.datajs.com.cn`;*/
                   window.sessionStorage.setItem("loginInfo", JSON.stringify(res.data));
                   this.userId = res.data.user_id;
                   if(res.data.wallet_address){
@@ -443,9 +432,6 @@
     font-size: 20px;
     color: #222222;
     height: 44px;
-    /*width: 190px;*/
-    /*float: left;*/
-    /*text-align: center;*/
     border-bottom: 4px solid #313131;
     cursor: pointer;
   }
@@ -465,7 +451,6 @@
     width: 380px;
     height: 40px;
     background-color: #f3f3f3;
-    /*margin-bottom: 16px;*/
     margin-bottom: 24px
   }
   
@@ -616,29 +601,6 @@
     }
   }
   
-  /*.site_box {
-    margin 0 auto
-    width 100%
-    background-color: #e7e7e7;
-    .site {
-      width 1212px
-      height 34px
-      line-height 34px
-      margin 0 auto
-      ul {
-        padding-left 8px
-        font-size 0
-        li {
-          vertical-align top
-          display inline-block
-          font-size 14px
-          a {
-            color: #666666;
-          }
-        }
-      }
-    }
-  }*/
   .to_forget{
     width 380px
     height 36px
@@ -649,7 +611,6 @@
       line-height 20px
       font-size: 16px;
       color: #666666;
-      //margin-top 8px
     }
   }
   .to_register{
