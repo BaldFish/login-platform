@@ -1,4 +1,4 @@
-let baseURL="https://wallet-api-test.launchain.org";
+let baseURL="https://wxmp-api-test.renrendao.net";
 let loginPlatform="https://login-test.datajs.com.cn";
 let exchangePlatform="https://exchange-test.datajs.com.cn";
 let transferPlatform="https://transfer-test.datajs.com.cn";
